@@ -24,7 +24,7 @@ def scrape_info():
     url = "https://mars.nasa.gov/news/"
     browser.visit(url)
 
-    time.sleep(1)
+    time.sleep(5)
 
     html = browser.html
     soup = BeautifulSoup(html, 'html.parser')
@@ -59,7 +59,7 @@ def scrape_info():
 
     mars_data["featured_image_url"] = featured_image_url
 
-    
+      
 
     # ### Mars Weather
     driver = webdriver.Chrome()
@@ -73,11 +73,16 @@ def scrape_info():
     weather_html = driver.page_source
     weather_soup = BeautifulSoup(weather_html,"html.parser")
 
-    weather = weather_soup.find_all(class_="css-901oao css-16my406 r-1qd0xha r-ad9z0x r-bcqeeo r-qvutc0")[34]
-    mars_weather = weather.text 
+    weather = weather_soup.find_all(class_="css-901oao css-16my406 r-1qd0xha r-ad9z0x r-bcqeeo r-qvutc0")
+    for tweet in weather:
+        if tweet.text.split(" ")[0] == "InSight":
+            mars_weather = tweet.text 
+            break
     print(mars_weather)
 
     mars_data["mars_weather"] = mars_weather
+
+    
 
     # ### Mars Facts
     facts_url = "https://space-facts.com/mars/"
@@ -92,6 +97,7 @@ def scrape_info():
 
     mars_data["mars_facts"] = mars_facts
 
+    
     
 
     # ### Mars Hemispheres
@@ -123,6 +129,6 @@ def scrape_info():
 
 # Close the browser after scraping
     browser.quit()
-
+    driver.quit()
     # Return results
     return mars_data
